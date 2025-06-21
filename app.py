@@ -74,7 +74,7 @@ def login():
         conn = create_connection()
         if conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT role FROM Users WHERE user_id = ? AND password = ?", (user_id, password))
+            cursor.execute("SELECT role FROM Users WHERE user_id = %s AND password = %s", (user_id, password))
             result = cursor.fetchone()
             conn.close()
 
