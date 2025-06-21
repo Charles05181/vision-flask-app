@@ -121,7 +121,7 @@ def logout_user(user_id):
     conn = create_connection()
     if conn:
         cursor = conn.cursor()
-        cursor.execute("UPDATE Users SET is_logged_in = 0 WHERE user_id = ?", (user_id,))
+        cursor.execute("UPDATE Users SET is_logged_in = 0 WHERE user_id = %s", (user_id,))
         conn.commit()
         conn.close()
         flash(f'User {user_id} logged out successfully', 'success')
@@ -151,7 +151,7 @@ def delete_user(user_id):
     conn = create_connection()
     if conn:
         cursor = conn.cursor()
-        cursor.execute("DELETE FROM Users WHERE user_id = ?", (user_id,))
+        cursor.execute("DELETE FROM Users WHERE user_id = %s", (user_id,))
         conn.commit()
         conn.close()
         flash(f'User {user_id} deleted successfully', 'success')
@@ -184,10 +184,8 @@ def add_user():
     if conn:
         cursor = conn.cursor()
         try:
-            cursor.execute(
-                "INSERT INTO Users (user_id, role, password, expiration_date) VALUES (?, ?, ?, ?)",
-                (new_user_id, "A" if role == "Admin" else "U", new_password, expiration_date)
-            )
+            cursor.execute("INSERT INTO Users (user_id, role, password, expiration_date) VALUES (%s, %s, %s, %s)",
+                           (new_user_id, "A" if role == "Admin" else "U", new_password, expiration_date))
             conn.commit()
             flash('User added successfully!', 'success')
         except Exception as e:
@@ -216,7 +214,7 @@ def generate_users():
             expiration_date = (get_current_time() + timedelta(days=validity_days)).date()
 
             try:
-                cursor.execute("INSERT INTO Users (user_id, role, password, expiration_date) VALUES (?, ?, ?, ?)",
+                cursor.execute("INSERT INTO Users (user_id, role, password, expiration_date) VALUES (%s, %s, %s, %s)",
                                (username, "U", password, expiration_date))
             except Exception as e:
                 flash(f'Error creating user {username}: {e}', 'error')
