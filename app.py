@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, Response
-import pyodbc
+import pymssql
 from datetime import datetime, timedelta
 import webbrowser
 from threading import Timer
@@ -19,15 +19,14 @@ password = 'Charles@0518'
 
 def create_connection():
     try:
-        connection = pyodbc.connect(
-            f"DRIVER={{ODBC Driver 17 for SQL Server}};"
-            f"SERVER={server};"
-            f"DATABASE={database};"
-            f"UID={username};"
-            f"PWD={password}"
+        connection = pymssql.connect(
+            server=server,
+            user=username,
+            password=password,
+            database=database
         )
         return connection
-    except pyodbc.Error as e:
+    except pymssql.Error as e:
         print(f"The error '{e}' occurred")
         return None
 
