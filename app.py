@@ -5,6 +5,8 @@ import webbrowser
 from threading import Timer
 import random
 import string
+import os
+
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
@@ -253,9 +255,8 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
-def open_browser():
-    webbrowser.open_new('http://127.0.0.1:5000/')
 
 if __name__ == '__main__':
-    Timer(1, open_browser).start()
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
+
