@@ -1,0 +1,215 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #000000;
+    color: #FFFFFF;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Flash messages */
+.flash-error {
+    background-color: #FF0000;
+    color: white;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.flash-success {
+    background-color: #007357;
+    color: white;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+/* Login Page */
+.login-container {
+    width: 400px;
+    margin: 100px auto;
+    padding: 30px;
+    background-color: #0B0B0B;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 115, 87, 0.5);
+    text-align: center;
+}
+
+.login-container h1 {
+    margin-bottom: 30px;
+    color: #007357;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #007357;
+    border-radius: 5px;
+    background-color: #0B0B0B;
+    color: #FFFFFF;
+}
+
+.btn-login {
+    width: 100%;
+    padding: 10px;
+    background-color: #007357;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-login:hover {
+    background-color: #005a45;
+}
+
+.footer {
+    margin-top: 30px;
+    font-size: 12px;
+    color: #FFFFFF;
+}
+
+/* Dashboard */
+.dashboard-container {
+    background-color: #0B0B0B;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.btn-logout {
+    padding: 8px 15px;
+    background-color: #FF0000;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.btn-logout:hover {
+    background-color: #cc0000;
+}
+
+.user-list table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+.user-list th, .user-list td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #007357;
+}
+
+.user-list th {
+    background-color: #007357;
+    color: #FFFFFF;
+}
+
+.user-list tr:nth-child(even) {
+    background-color: #1A1A1A;
+}
+
+.user-list tr:hover {
+    background-color: #2A2A2A;
+}
+
+.actions {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-action {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    color: #FFFFFF;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.btn-logout-user {
+    background-color: #FFA500;
+}
+
+.btn-logout-user:hover {
+    background-color: #cc8400;
+}
+
+.btn-delete {
+    background-color: #FF0000;
+}
+
+.btn-delete:hover {
+    background-color: #cc0000;
+}
+
+/* Add User Form */
+.add-user-form {
+    background-color: #1A1A1A;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.add-user-form h2 {
+    margin-top: 0;
+    color: #007357;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.add-user-form select, 
+.add-user-form input {
+    width: 100%;
+    padding: 8px;
+    background-color: #0B0B0B;
+    color: #FFFFFF;
+    border: 1px solid #007357;
+    border-radius: 3px;
+}
+
+.btn-add-user {
+    padding: 10px 20px;
+    background-color: #007357;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-add-user:hover {
+    background-color: #005a45;
+}
