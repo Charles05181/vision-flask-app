@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .summary-box {
+        max-width: 800px;
+        margin: 50px auto;
+        background: #1a1a1a;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 255, 128, 0.15);
+        color: #fff;
+        border: 1px solid #00ffcc;
+    }
+    .summary-box h2 {
+        color: #00ffcc;
+        text-align: center;
+        border-bottom: 1px solid #444;
+        padding-bottom: 10px;
+    }
+    .message-box {
+        background: #0d0d0d;
+        padding: 20px;
+        border-radius: 8px;
+        border-left: 4px solid #00ffcc;
+        font-family: 'Courier New', monospace;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        margin: 20px 0;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    .copy-btn {
+        background: #00ffcc;
+        color: #000;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 16px;
+    }
+    .copy-btn:hover {
+        background: #00cca3;
+    }
+    .btn-dashboard {
+        background: #5cb85c;
+        color: #fff;
+        padding: 10px 25px;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 10px;
+    }
+    .btn-dashboard:hover {
+        background: #4cae4c;
+    }
+    .info-line {
+        margin: 8px 0;
+    }
+    .highlight {
+        color: #00ffcc;
+        font-weight: bold;
+    }
+    .action-buttons {
+        text-align: center;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="summary-box">
+    <h2>✅ Users Generated Successfully</h2>
+    <p style="text-align:center; color:#aaa; margin-bottom:20px;">
+        Copy the message below and share it with your users.
+    </p>
+
+    <div class="message-box" id="messageContent">
+🎉 <strong>Vision Mailer User Credentials</strong> 🎉
+
+👤 <strong>Usernames:</strong> {{ info.usernames | join(', ') }}
+🔑 <strong>Password:</strong> {{ info.password }}
+📅 <strong>Validity:</strong> {{ info.validity_days }} days (expires on {{ info.expiration_date }})
+    </div>
+
+    <div class="action-buttons">
+        <button class="copy-btn" onclick="copyMessage()">📋 Copy Message</button>
+        <br>
+        <a href="{{ url_for('dashboard') }}" class="btn-dashboard">← Back to Dashboard</a>
+    </div>
+</div>
+
+<script>
+    function copyMessage() {
+        const content = document.getElementById('messageContent').innerText;
+        navigator.clipboard.writeText(content).then(() => {
+            alert('✅ Message copied to clipboard!');
+        }).catch(err => {
+            alert('❌ Failed to copy: ' + err);
+        });
+    }
+</script>
+{% endblock %}
