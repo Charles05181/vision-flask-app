@@ -107,8 +107,11 @@ def dashboard():
                 'is_logged_in': bool(is_logged_in)
             })
 
-        return render_template('dashboard.html', users=user_data)
-    return render_template('dashboard.html', users=[])
+        # Get generated info (if any) and remove from session
+        gen_info = session.pop('generated_info', None)
+
+        return render_template('dashboard.html', users=user_data, gen_info=gen_info)
+    return render_template('dashboard.html', users=[], gen_info=None)
 
 @app.route('/logout_user/<user_id>')
 def logout_user(user_id):
@@ -239,7 +242,8 @@ def generate_users():
     conn = create_connection()
     if conn:
         cursor = conn.cursor()
-        # Find highest existing numeric suffix
+
+        # Find the highest existing numeric suffix for this base username
         cursor.execute("SELECT user_id FROM Users WHERE user_id LIKE %s", (base_username + '%',))
         existing = cursor.fetchall()
         max_num = 0
@@ -270,28 +274,18 @@ def generate_users():
         conn.close()
 
         if created_count > 0:
-            # Store info in session to display on summary page
+            # Store info in session to display on dashboard
             session['generated_info'] = {
                 'usernames': created_users,
                 'password': common_password,
                 'validity_days': validity_days,
                 'expiration_date': (get_current_time() + timedelta(days=validity_days)).date().strftime('%Y-%m-%d')
             }
-            return redirect(url_for('generated_users'))
+            flash(f'{created_count} user(s) generated successfully.', 'success')
         else:
             flash('No users were created. Check errors.', 'error')
 
     return redirect(url_for('dashboard'))
-
-@app.route('/generated_users')
-def generated_users():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
-    gen_info = session.pop('generated_info', None)
-    if not gen_info:
-        flash('No user generation data found.', 'error')
-        return redirect(url_for('dashboard'))
-    return render_template('generated_users.html', info=gen_info)
 
 @app.route('/export_users')
 def export_users():
