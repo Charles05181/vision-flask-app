@@ -203,6 +203,12 @@ def generate_users():
     base_username = request.form['base_username']
     count = int(request.form['count'])
     validity_days = int(request.form.get('validity_days', '30'))
+    # Get the common password from the form
+    common_password = request.form.get('password', '')
+
+    if not common_password:
+        flash('Password is required for generating multiple users.', 'error')
+        return redirect(url_for('dashboard'))
 
     conn = create_connection()
     if conn:
@@ -210,18 +216,18 @@ def generate_users():
         for _ in range(count):
             suffix = ''.join(random.choices(string.digits, k=5))
             username = f"{base_username}{suffix}"
-            password = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
             expiration_date = (get_current_time() + timedelta(days=validity_days)).date()
 
             try:
+                # Use the same password for every generated user
                 cursor.execute("INSERT INTO Users (user_id, role, password, expiration_date) VALUES (%s, %s, %s, %s)",
-                               (username, "U", password, expiration_date))
+                               (username, "U", common_password, expiration_date))
             except Exception as e:
                 flash(f'Error creating user {username}: {e}', 'error')
 
         conn.commit()
         conn.close()
-        flash(f'{count} users generated successfully.', 'success')
+        flash(f'{count} users generated successfully with the provided password.', 'success')
 
     return redirect(url_for('dashboard'))
 
@@ -256,4 +262,3 @@ def logout():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
-
