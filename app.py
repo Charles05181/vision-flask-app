@@ -1,12 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, Response
 import pymssql
 from datetime import datetime, timedelta
-import webbrowser
-from threading import Timer
 import random
 import string
 import os
-
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
@@ -158,13 +155,11 @@ def delete_user(user_id):
 
     return redirect(url_for('dashboard'))
 
-# NEW: Bulk delete selected users
 @app.route('/delete_selected_users', methods=['POST'])
 def delete_selected_users():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
 
-    # Get list of selected user IDs from the form
     selected_users = request.form.getlist('selected_users')
     if not selected_users:
         flash('No users selected for deletion.', 'error')
@@ -228,10 +223,14 @@ def generate_users():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
 
-    base_username = request.form['base_username']
+    base_username = request.form['base_username'].strip()
     count = int(request.form['count'])
     validity_days = int(request.form.get('validity_days', '30'))
     common_password = request.form.get('password', '')
+
+    if not base_username:
+        flash('Base username is required.', 'error')
+        return redirect(url_for('dashboard'))
 
     if not common_password:
         flash('Password is required for generating multiple users.', 'error')
@@ -240,20 +239,36 @@ def generate_users():
     conn = create_connection()
     if conn:
         cursor = conn.cursor()
-        for _ in range(count):
-            suffix = ''.join(random.choices(string.digits, k=5))
-            username = f"{base_username}{suffix}"
+
+        # Find the highest existing numeric suffix for this base username
+        cursor.execute("SELECT user_id FROM Users WHERE user_id LIKE %s", (base_username + '%',))
+        existing = cursor.fetchall()
+        max_num = 0
+        for row in existing:
+            uid = row[0]
+            if uid.startswith(base_username):
+                suffix = uid[len(base_username):]
+                if suffix.isdigit():
+                    num = int(suffix)
+                    if num > max_num:
+                        max_num = num
+
+        start_num = max_num + 1
+        created = 0
+        for i in range(count):
+            new_user_id = base_username + str(start_num + i)
             expiration_date = (get_current_time() + timedelta(days=validity_days)).date()
 
             try:
                 cursor.execute("INSERT INTO Users (user_id, role, password, expiration_date) VALUES (%s, %s, %s, %s)",
-                               (username, "U", common_password, expiration_date))
+                               (new_user_id, "U", common_password, expiration_date))
+                created += 1
             except Exception as e:
-                flash(f'Error creating user {username}: {e}', 'error')
+                flash(f'Error creating user {new_user_id}: {e}', 'error')
 
         conn.commit()
         conn.close()
-        flash(f'{count} users generated successfully with the provided password.', 'success')
+        flash(f'{created} user(s) generated successfully with sequential numbers starting from {start_num}.', 'success')
 
     return redirect(url_for('dashboard'))
 
@@ -283,7 +298,6 @@ def export_users():
 def logout():
     session.clear()
     return redirect(url_for('login'))
-
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
