@@ -239,8 +239,7 @@ def generate_users():
     conn = create_connection()
     if conn:
         cursor = conn.cursor()
-
-        # Find the highest existing numeric suffix for this base username
+        # Find highest existing numeric suffix
         cursor.execute("SELECT user_id FROM Users WHERE user_id LIKE %s", (base_username + '%',))
         existing = cursor.fetchall()
         max_num = 0
@@ -254,23 +253,45 @@ def generate_users():
                         max_num = num
 
         start_num = max_num + 1
-        created = 0
+        created_users = []
+        created_count = 0
         for i in range(count):
             new_user_id = base_username + str(start_num + i)
             expiration_date = (get_current_time() + timedelta(days=validity_days)).date()
-
             try:
                 cursor.execute("INSERT INTO Users (user_id, role, password, expiration_date) VALUES (%s, %s, %s, %s)",
                                (new_user_id, "U", common_password, expiration_date))
-                created += 1
+                created_users.append(new_user_id)
+                created_count += 1
             except Exception as e:
                 flash(f'Error creating user {new_user_id}: {e}', 'error')
 
         conn.commit()
         conn.close()
-        flash(f'{created} user(s) generated successfully with sequential numbers starting from {start_num}.', 'success')
+
+        if created_count > 0:
+            # Store info in session to display on summary page
+            session['generated_info'] = {
+                'usernames': created_users,
+                'password': common_password,
+                'validity_days': validity_days,
+                'expiration_date': (get_current_time() + timedelta(days=validity_days)).date().strftime('%Y-%m-%d')
+            }
+            return redirect(url_for('generated_users'))
+        else:
+            flash('No users were created. Check errors.', 'error')
 
     return redirect(url_for('dashboard'))
+
+@app.route('/generated_users')
+def generated_users():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+    gen_info = session.pop('generated_info', None)
+    if not gen_info:
+        flash('No user generation data found.', 'error')
+        return redirect(url_for('dashboard'))
+    return render_template('generated_users.html', info=gen_info)
 
 @app.route('/export_users')
 def export_users():
