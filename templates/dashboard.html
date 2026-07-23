@@ -52,6 +52,11 @@
         background-color: #f0ad4e;
     }
 
+    .btn-delete-selected {
+        background-color: #c9302c;
+        margin-bottom: 10px;
+    }
+
     .dashboard-grid {
         display: flex;
         gap: 20px;
@@ -100,6 +105,20 @@
         padding: 10px;
         border: 1px solid #444;
         text-align: center;
+        vertical-align: middle;
+    }
+
+    /* Keep checkbox column narrow */
+    th:first-child, td:first-child {
+        width: 40px;
+    }
+
+    input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        background-color: #0d0d0d;
+        accent-color: #00ffcc;
     }
 
     input, select {
@@ -135,13 +154,20 @@
         color: #777;
     }
 
-    /* Small spacing adjustments */
     .add-user-box h2 {
         margin-top: 20px;
         color: #00ffcc;
     }
     .add-user-box form {
         margin-bottom: 20px;
+    }
+
+    .selected-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
     }
 </style>
 
@@ -173,42 +199,55 @@
             <div class="search-box">
                 <input type="text" id="searchInput" onkeyup="filterUsers()" placeholder="Search by User ID...">
             </div>
-            <table id="userTable">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>User ID</th>
-                        <th>Role</th>
-                        <th>Password</th>
-                        <th>Expiration</th>
-                        <th>Status</th>
-                        <th>Logout</th>
-                        <th>Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in users %}
-                    <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>{{ user.user_id }}</td>
-                        <td>{{ user.role }}</td>
-                        <td>{{ user.password }}</td>
-                        <td>{{ user.expiration_date }}</td>
-                        <td>{{ "Logged In" if user.is_logged_in else "Logged Out" }}</td>
-                        <td>
-                            {% if user.is_logged_in %}
-                                <a href="{{ url_for('logout_user', user_id=user.user_id) }}" class="btn btn-logout-user">Logout</a>
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="{{ url_for('delete_user', user_id=user.user_id) }}" class="btn btn-delete">Delete</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+
+            <!-- Bulk delete form -->
+            <form method="POST" action="{{ url_for('delete_selected_users') }}" id="bulkDeleteForm">
+                <div class="selected-actions">
+                    <span style="color: #aaa;">Select: 
+                        <input type="checkbox" id="selectAll" onclick="toggleAllCheckboxes()"> All
+                    </span>
+                    <button type="submit" class="btn btn-delete-selected" onclick="return confirm('Delete selected users?')">Delete Selected</button>
+                </div>
+
+                <table id="userTable">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAllHeader" onclick="toggleAllCheckboxes()"></th>
+                            <th>#</th>
+                            <th>User ID</th>
+                            <th>Role</th>
+                            <th>Password</th>
+                            <th>Expiration</th>
+                            <th>Status</th>
+                            <th>Logout</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td><input type="checkbox" name="selected_users" value="{{ user.user_id }}" class="user-checkbox"></td>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ user.user_id }}</td>
+                            <td>{{ user.role }}</td>
+                            <td>{{ user.password }}</td>
+                            <td>{{ user.expiration_date }}</td>
+                            <td>{{ "Logged In" if user.is_logged_in else "Logged Out" }}</td>
+                            <td>
+                                {% if user.is_logged_in %}
+                                    <a href="{{ url_for('logout_user', user_id=user.user_id) }}" class="btn btn-logout-user">Logout</a>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('delete_user', user_id=user.user_id) }}" class="btn btn-delete" onclick="return confirm('Delete this user?')">Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </form>
         </div>
 
         <!-- Add User Box -->
@@ -231,7 +270,6 @@
                 <input type="text" name="base_username" placeholder="Base Username (e.g., Charles)" required>
                 <input type="number" name="count" placeholder="How many users?" min="1" required>
                 <input type="number" name="validity_days" placeholder="Valid Days (default 30)" min="1">
-                <!-- NEW: Common password field -->
                 <input type="password" name="password" placeholder="Common Password for all users" required>
                 <button type="submit" class="btn btn-add">Generate Users</button>
             </form>
@@ -247,7 +285,7 @@
     </div>
 </div>
 
-<!-- JS for search -->
+<!-- JS for search and select-all -->
 <script>
     function filterUsers() {
         let input = document.getElementById("searchInput");
@@ -256,12 +294,36 @@
         let tr = table.getElementsByTagName("tr");
 
         for (let i = 1; i < tr.length; i++) {
-            let td = tr[i].getElementsByTagName("td")[1];
+            let td = tr[i].getElementsByTagName("td")[2]; // User ID column index (0: checkbox, 1: #, 2: User ID)
             if (td) {
                 let txtValue = td.textContent || td.innerText;
                 tr[i].style.display = txtValue.toUpperCase().includes(filter) ? "" : "none";
             }
         }
     }
+
+    function toggleAllCheckboxes() {
+        let masterCheck = document.getElementById("selectAll") || document.getElementById("selectAllHeader");
+        let checkboxes = document.getElementsByClassName("user-checkbox");
+        for (let cb of checkboxes) {
+            cb.checked = masterCheck.checked;
+        }
+    }
+
+    // Sync the two "select all" checkboxes
+    document.addEventListener('DOMContentLoaded', function() {
+        let selectAll1 = document.getElementById('selectAll');
+        let selectAll2 = document.getElementById('selectAllHeader');
+        if (selectAll1 && selectAll2) {
+            selectAll1.addEventListener('change', function() {
+                selectAll2.checked = selectAll1.checked;
+                toggleAllCheckboxes();
+            });
+            selectAll2.addEventListener('change', function() {
+                selectAll1.checked = selectAll2.checked;
+                toggleAllCheckboxes();
+            });
+        }
+    });
 </script>
 {% endblock %}
