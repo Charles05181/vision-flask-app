@@ -6,76 +6,68 @@
         font-family: Arial, sans-serif;
         background-color: #000;
         color: #fff;
+        margin: 0;
+        padding: 0;
     }
 
     .dashboard-container {
-        max-width: 1200px;
+        width: 95%;
+        max-width: 1600px;  /* wider than before */
         margin: 40px auto;
-        padding: 20px;
+        padding: 30px;
         background-color: #1a1a1a;
-        border-radius: 10px;
-        box-shadow: 0 0 15px rgba(0, 255, 128, 0.1);
+        border-radius: 12px;
+        box-shadow: 0 0 25px rgba(0, 255, 128, 0.15);
     }
 
     h1 {
         text-align: center;
         color: #00ffcc;
+        font-size: 2.2rem;
     }
 
     .btn {
-        padding: 8px 14px;
+        padding: 8px 16px;
         margin: 5px;
         border: none;
         border-radius: 4px;
         color: #fff;
         font-weight: bold;
         cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 0.9rem;
     }
 
-    .btn-logout {
-        background-color: #d9534f;
-    }
-
-    .btn-logout-all {
-        background-color: #f0ad4e;
-    }
-
-    .btn-add {
-        background-color: #5cb85c;
-    }
-
-    .btn-delete {
-        background-color: #d9534f;
-    }
-
-    .btn-logout-user {
-        background-color: #f0ad4e;
-    }
-
-    .btn-delete-selected {
-        background-color: #c9302c;
-        margin-bottom: 10px;
-    }
+    .btn-logout { background-color: #d9534f; }
+    .btn-logout-all { background-color: #f0ad4e; }
+    .btn-add { background-color: #5cb85c; }
+    .btn-delete { background-color: #d9534f; }
+    .btn-logout-user { background-color: #f0ad4e; }
+    .btn-delete-selected { background-color: #c9302c; margin-bottom: 10px; }
 
     .dashboard-grid {
         display: flex;
-        gap: 20px;
+        gap: 30px;
         margin-top: 30px;
+        flex-wrap: wrap;
     }
 
     .user-list-box {
-        flex: 2;
+        flex: 3;  /* more weight to the table */
+        min-width: 0;
         background-color: #121212;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 255, 128, 0.1);
-        max-height: 600px;
+        max-height: 650px;
         overflow-y: auto;
-        overflow-x: hidden;
+        overflow-x: auto;
     }
 
     .add-user-box {
-        flex: 1;
+        flex: 1.2;
+        min-width: 280px;
         background-color: #121212;
         padding: 20px;
         border-radius: 8px;
@@ -83,29 +75,39 @@
     }
 
     .search-box {
-        margin-bottom: 10px;
+        margin-bottom: 15px;
     }
 
     .search-box input {
         width: 100%;
-        padding: 10px;
+        padding: 12px;
         border: 1px solid #444;
         border-radius: 5px;
         background-color: #1a1a1a;
         color: #00ffcc;
+        font-size: 1rem;
     }
 
     table {
         width: 100%;
         border-collapse: collapse;
         color: #fff;
+        font-size: 0.9rem;
+        min-width: 700px;
     }
 
     th, td {
-        padding: 10px;
+        padding: 12px 10px;
         border: 1px solid #444;
         text-align: center;
         vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    th {
+        background-color: #0d0d0d;
+        color: #00ffcc;
+        font-weight: bold;
     }
 
     th:first-child, td:first-child {
@@ -116,69 +118,128 @@
         width: 16px;
         height: 16px;
         cursor: pointer;
-        background-color: #0d0d0d;
         accent-color: #00ffcc;
     }
 
     input, select {
-        padding: 10px;
-        margin: 10px 5px;
+        padding: 10px 12px;
+        margin: 10px 0;
         border: 1px solid #333;
         border-radius: 5px;
         background-color: #0d0d0d;
         color: #00ffcc;
-        width: calc(100% - 20px);
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 0.95rem;
     }
 
     .flash {
-        padding: 12px;
-        margin: 10px 0;
+        padding: 14px;
+        margin: 15px 0;
         border-radius: 4px;
         text-align: center;
         color: white;
+        font-weight: bold;
     }
 
-    .flash.error {
-        background-color: #d9534f;
-    }
-
-    .flash.success {
-        background-color: #5cb85c;
-    }
+    .flash.error { background-color: #d9534f; }
+    .flash.success { background-color: #5cb85c; }
 
     .footer {
-        margin-top: 30px;
+        margin-top: 40px;
         text-align: center;
         font-size: 14px;
         color: #777;
     }
 
     .add-user-box h2 {
-        margin-top: 20px;
+        margin-top: 25px;
         color: #00ffcc;
+        font-size: 1.3rem;
+        border-bottom: 1px solid #333;
+        padding-bottom: 8px;
     }
+
     .add-user-box form {
-        margin-bottom: 20px;
+        margin-bottom: 25px;
     }
 
     .selected-actions {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
         flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    /* Message box styling */
+    .gen-message-box {
+        margin: 30px 0;
+        background: #121212;
+        border: 1px solid #00ffcc;
+        border-radius: 8px;
+        padding: 20px;
+    }
+
+    .gen-message-box h3 {
+        color: #00ffcc;
+        margin-top: 0;
+    }
+
+    .gen-message-content {
+        background: #0d0d0d;
+        padding: 15px;
+        border-radius: 5px;
+        font-family: 'Courier New', monospace;
+        white-space: pre-wrap;
+        max-height: 220px;
+        overflow-y: auto;
+        border-left: 3px solid #00ffcc;
+        color: #ddd;
+        font-size: 0.95rem;
+    }
+
+    .copy-btn {
+        background: #00ffcc;
+        color: #000;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    .copy-btn:hover {
+        background: #00cca3;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 992px) {
+        .dashboard-grid {
+            flex-direction: column;
+        }
+        .user-list-box, .add-user-box {
+            flex: 1 1 auto;
+            max-height: none;
+        }
+        .dashboard-container {
+            width: 98%;
+            padding: 15px;
+        }
     }
 </style>
 
 <div class="dashboard-container">
     <h1>User Management Dashboard</h1>
 
-    <div style="text-align: center;">
+    <div style="text-align: center; margin-bottom: 15px;">
         <a href="{{ url_for('logout') }}" class="btn btn-logout">Logout</a>
         <a href="{{ url_for('logout_all_users') }}" class="btn btn-logout-all">Logout All Users</a>
     </div>
 
-    <div style="text-align: center; margin: 10px;">
+    <div style="text-align: center; margin: 10px 0 20px 0;">
         <strong>Active Users: {{ users | selectattr('is_logged_in', 'equalto', True) | list | length }}</strong> |
         <strong>Inactive Users: {{ users | selectattr('is_logged_in', 'equalto', False) | list | length }}</strong>
     </div>
@@ -261,7 +322,7 @@
                     <option value="User">User</option>
                 </select>
                 <input type="text" name="validity_days" placeholder="Valid Days (for User)">
-                <button type="submit" class="btn btn-add">Add User</button>
+                <button type="submit" class="btn btn-add" style="width:100%;">Add User</button>
             </form>
 
             <h2>Generate Multiple Users</h2>
@@ -270,33 +331,31 @@
                 <input type="number" name="count" placeholder="How many users?" min="1" required>
                 <input type="number" name="validity_days" placeholder="Valid Days (default 30)" min="1">
                 <input type="password" name="password" placeholder="Common Password for all users" required>
-                <button type="submit" class="btn btn-add">Generate Users</button>
+                <button type="submit" class="btn btn-add" style="width:100%;">Generate Users</button>
             </form>
 
             <form method="GET" action="{{ url_for('export_users') }}">
-                <button type="submit" class="btn btn-add" style="margin-top: 10px;">Export Users</button>
+                <button type="submit" class="btn btn-add" style="width:100%; margin-top: 10px;">Export Users</button>
             </form>
         </div>
     </div>
 
     <!-- ========== MESSAGE BOX (shown after user generation) ========== -->
     {% if gen_info %}
-    <div style="margin: 30px 0; background: #121212; border: 1px solid #00ffcc; border-radius: 8px; padding: 15px;">
-        <h3 style="color: #00ffcc; margin-top:0;">✅ Users Generated Successfully</h3>
-        <div style="background: #0d0d0d; padding: 15px; border-radius: 5px; font-family: monospace; white-space: pre-wrap; max-height: 200px; overflow-y: auto; border-left: 3px solid #00ffcc;">
+    <div class="gen-message-box">
+        <h3>✅ Users Generated Successfully</h3>
+        <div class="gen-message-content">
 🎉 Vision Mailer User Credentials 🎉
 
 👤 Usernames: {{ gen_info.usernames | join(', ') }}
 🔑 Password: {{ gen_info.password }}
 📅 Validity: {{ gen_info.validity_days }} days (expires on {{ gen_info.expiration_date }})
         </div>
-        <div style="margin-top: 10px;">
-            <button onclick="copyGeneratedMessage()" style="background:#00ffcc; color:#000; border:none; padding:6px 15px; border-radius:4px; cursor:pointer;">📋 Copy</button>
-        </div>
+        <button class="copy-btn" onclick="copyGeneratedMessage()">📋 Copy Message</button>
     </div>
     <script>
         function copyGeneratedMessage() {
-            const msg = document.querySelector('div[style*="border-left: 3px solid #00ffcc;"]');
+            const msg = document.querySelector('.gen-message-content');
             const text = msg ? msg.innerText : '';
             navigator.clipboard.writeText(text).then(() => {
                 alert('✅ Message copied!');
