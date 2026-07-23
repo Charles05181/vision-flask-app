@@ -135,6 +135,14 @@
         color: #777;
     }
 
+    /* Small spacing adjustments */
+    .add-user-box h2 {
+        margin-top: 20px;
+        color: #00ffcc;
+    }
+    .add-user-box form {
+        margin-bottom: 20px;
+    }
 </style>
 
 <div class="dashboard-container">
@@ -222,7 +230,9 @@
             <form method="POST" action="{{ url_for('generate_users') }}">
                 <input type="text" name="base_username" placeholder="Base Username (e.g., Charles)" required>
                 <input type="number" name="count" placeholder="How many users?" min="1" required>
-                <input type="number" name="validity_days" placeholder="Valid Days" min="1" required>
+                <input type="number" name="validity_days" placeholder="Valid Days (default 30)" min="1">
+                <!-- NEW: Common password field -->
+                <input type="password" name="password" placeholder="Common Password for all users" required>
                 <button type="submit" class="btn btn-add">Generate Users</button>
             </form>
 
