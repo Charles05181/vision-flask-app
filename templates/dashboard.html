@@ -108,7 +108,6 @@
         vertical-align: middle;
     }
 
-    /* Keep checkbox column narrow */
     th:first-child, td:first-child {
         width: 40px;
     }
@@ -280,6 +279,33 @@
         </div>
     </div>
 
+    <!-- ========== MESSAGE BOX (shown after user generation) ========== -->
+    {% if gen_info %}
+    <div style="margin: 30px 0; background: #121212; border: 1px solid #00ffcc; border-radius: 8px; padding: 15px;">
+        <h3 style="color: #00ffcc; margin-top:0;">✅ Users Generated Successfully</h3>
+        <div style="background: #0d0d0d; padding: 15px; border-radius: 5px; font-family: monospace; white-space: pre-wrap; max-height: 200px; overflow-y: auto; border-left: 3px solid #00ffcc;">
+🎉 Vision Mailer User Credentials 🎉
+
+👤 Usernames: {{ gen_info.usernames | join(', ') }}
+🔑 Password: {{ gen_info.password }}
+📅 Validity: {{ gen_info.validity_days }} days (expires on {{ gen_info.expiration_date }})
+        </div>
+        <div style="margin-top: 10px;">
+            <button onclick="copyGeneratedMessage()" style="background:#00ffcc; color:#000; border:none; padding:6px 15px; border-radius:4px; cursor:pointer;">📋 Copy</button>
+        </div>
+    </div>
+    <script>
+        function copyGeneratedMessage() {
+            const msg = document.querySelector('div[style*="border-left: 3px solid #00ffcc;"]');
+            const text = msg ? msg.innerText : '';
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ Message copied!');
+            }).catch(() => alert('❌ Copy failed.'));
+        }
+    </script>
+    {% endif %}
+    <!-- ================================================================ -->
+
     <div class="footer">
         © VISION MAILER | Admin Page
     </div>
@@ -294,7 +320,7 @@
         let tr = table.getElementsByTagName("tr");
 
         for (let i = 1; i < tr.length; i++) {
-            let td = tr[i].getElementsByTagName("td")[2]; // User ID column index (0: checkbox, 1: #, 2: User ID)
+            let td = tr[i].getElementsByTagName("td")[2];
             if (td) {
                 let txtValue = td.textContent || td.innerText;
                 tr[i].style.display = txtValue.toUpperCase().includes(filter) ? "" : "none";
@@ -310,7 +336,6 @@
         }
     }
 
-    // Sync the two "select all" checkboxes
     document.addEventListener('DOMContentLoaded', function() {
         let selectAll1 = document.getElementById('selectAll');
         let selectAll2 = document.getElementById('selectAllHeader');
